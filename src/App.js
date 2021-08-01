@@ -6,17 +6,8 @@ import Notification from "./components/Notification";
 import "./styles/main.scss";
 
 const initialState = { good: 0, neutral: 0, bad: 0 };
-const reducer = (state, action) => {
-  switch (action.type) {
-    case "good":
-      return { ...state, good: state.good + 1 };
-    case "neutral":
-      return { ...state, neutral: state.neutral + 1 };
-    case "bad":
-      return { ...state, bad: state.bad + 1 };
-    default:
-      throw new Error();
-  }
+const reducer = (state, { type }) => {
+  return { ...state, [type]: state[type] + 1 };
 };
 
 export default function App() {
@@ -28,20 +19,7 @@ export default function App() {
 
   const onLeaveFeedback = (evt) => {
     const key = evt.target.innerHTML.toLowerCase();
-
-    switch (key) {
-      case "good":
-        dispatchFeedbacks({ type: "good" });
-        break;
-      case "neutral":
-        dispatchFeedbacks({ type: "neutral" });
-        break;
-      case "bad":
-        dispatchFeedbacks({ type: "bad" });
-        break;
-      default:
-        throw new Error();
-    }
+    dispatchFeedbacks({ type: key });
   };
 
   const countTotalFeedback = () => {
