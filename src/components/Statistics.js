@@ -1,38 +1,27 @@
 import React from "react";
 import shortId from "shortid";
-import { useSelector } from "react-redux";
-import { getFeedbacks } from "../redux/feedbacks/feedbacks-selectors";
+import PropTypes from "prop-types";
 
-export default function Statistics() {
-  const feedbacks = useSelector(getFeedbacks);
+const Statistics = ({ feedbacks, capitalize, total, positivePercentage }) => (
+  <>
+    <h2>Statistics</h2>
 
-  const capitalize = (string) => {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-  };
+    {Object.entries(feedbacks).map(([key, value]) => (
+      <p key={shortId.generate()}>
+        {capitalize(key)}: {value}
+      </p>
+    ))}
 
-  const countTotalFeedback = () => {
-    if (feedbacks)
-      return Object.values(feedbacks).reduce((prev, curr) => (prev += curr), 0);
-  };
+    <p>Total: {total()}</p>
+    <p>Positive feedback: {positivePercentage()}%</p>
+  </>
+);
 
-  const countPositiveFeedbackPercentage = () => {
-    return countTotalFeedback() !== 0
-      ? ((feedbacks.good / countTotalFeedback()) * 100).toFixed()
-      : 0;
-  };
+Statistics.propTypes = {
+  options: PropTypes.objectOf(PropTypes.number),
+  total: PropTypes.func.isRequired,
+  positivePercentage: PropTypes.func.isRequired,
+  capitalize: PropTypes.func.isRequired,
+};
 
-  return (
-    <>
-      <h2>Statistics</h2>
-
-      {Object.entries(feedbacks).map(([key, value]) => (
-        <p key={shortId.generate()}>
-          {capitalize(key)}: {value}
-        </p>
-      ))}
-
-      <p>Total: {countTotalFeedback()}</p>
-      <p>Positive feedback: {countPositiveFeedbackPercentage()}%</p>
-    </>
-  );
-}
+export default Statistics;
